@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine ❤️</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #ffe6eb;
+    text-align: center;
+    padding: 30px;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  h1 {
+    color: #e91e63;
+    font-size: 28px;
+  }
+
+  #message {
+    font-size: 20px;
+    margin: 15px 0;
+    color: #800040;
+    min-height: 30px;
+  }
+
+  .buttons {
+    position: relative;
+    width: 100%;
+    height: 120px;
+    max-width: 350px;
+    margin: 20px auto;
+  }
+
+  button {
+    padding: 14px 22px;
+    font-size: 18px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    position: absolute;
+  }
+
+  #yesBtn {
+    background: #e91e63;
+    color: white;
+    left: 20px;
+    top: 40px;
+    transition: transform 0.3s;
+  }
+
+  #noBtn {
+    background: #aaa;
+    color: black;
+    right: 20px;
+    top: 40px;
+    transition: transform 0.3s;
+  }
+
+  #photos {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #photos img {
+    width: 80%;
+    max-width: 300px;
+    border-radius: 16px;
+    margin-top: 15px;
+    display: none;
+  }
+
+  /* Hearts container */
+  #hearts-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1000;
+  }
+
+  /* Heart style */
+  .heart {
+    position: absolute;
+    background: url('photos/heart.png') no-repeat center center;
+    background-size: contain;
+    opacity: 0.9;
+    animation-name: floatRotate;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes floatRotate {
+    0% {
+      transform: translateY(0) scale(0.8) rotate(0deg);
+      opacity: 0.8;
+      filter: brightness(1.2);
+    }
+    50% {
+      transform: translateY(-200px) scale(1.1) rotate(20deg);
+      opacity: 0.9;
+      filter: brightness(1.5);
+    }
+    100% {
+      transform: translateY(-600px) scale(1.4) rotate(-15deg);
+      opacity: 0;
+      filter: brightness(1.3);
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Will you marry me? mai♥️❤️</h1>
+
+<div class="buttons">
+  <button id="yesBtn">YES 💖</button>
+  <button id="noBtn">NO 🙃</button>
+</div>
+
+<div id="message"></div>
+
+<div id="photos">
+  <!-- YES images -->
+  <img src="photos/yes1.jpg" id="yes1">
+  <img src="photos/yes2.jpg" id="yes2">
+  <img src="photos/yes3.jpg" id="yes3">
+  <!-- NO images -->
+  <img src="photos/no5.jpg" id="no1">
+  <img src="photos/no6.jpg" id="no2">
+  <img src="photos/no7.jpg" id="no3">
+  <img src="photos/no8.jpg" id="no4">
+  <img src="photos/no9.jpg" id="no5">
+  <img src="photos/no10.jpg" id="no6">
+</div>
+
+<div id="hearts-container"></div>
+
+<audio id="valentineSong" src="audio/song.mp3"></audio>
+
+<script>
+  const yesImages = ["yes1", "yes2", "yes3"];
+  const noImages = ["no1","no2","no3","no4","no5","no6"];
+  const noMessages = [
+    "Pleaseeee 🥺",
+    "Are you sure mai? 😢",
+    "Come on 😭",
+    "Don’t break my heart 💔",
+    "I’ll be so sad 🥹",
+    "Last chance 😭❤️"
+  ];
+
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
+  const message = document.getElementById("message");
+
+  let noCount = 0;
+
+  // YES button
+  yesBtn.onclick = () => {
+    // show all YES images
+    yesImages.forEach(id => {
+      document.getElementById(id).style.display = "block";
+    });
+
+    message.innerHTML = "YAAAY 💖 I knew it 😍❤️";
+
+    // play song
+    const song = document.getElementById("valentineSong");
+    song.play();
+
+    // hearts container
+    const heartsContainer = document.getElementById("hearts-container");
+
+    // continuously spawn hearts
+    const heartInterval = setInterval(() => {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      const size = 15 + Math.random() * 30;
+      heart.style.width = size + "px";
+      heart.style.height = size + "px";
+      heart.style.animationDuration = (4 + Math.random() * 3) + "s";
+      heartsContainer.appendChild(heart);
+
+      // remove after animation
+      setTimeout(() => {
+        if (heart.parentNode) heartsContainer.removeChild(heart);
+      }, 7000);
+    }, 300);
+
+    // stop hearts when song ends
+    song.onended = () => {
+      clearInterval(heartInterval);
+    };
+  };
+
+  // NO button
+  noBtn.onclick = () => {
+    const imgId = noImages[noCount % noImages.length];
+    document.getElementById(imgId).style.display = "block";
+    message.innerHTML = noMessages[noCount % noMessages.length];
+
+    // playful movement
+    const moveX = Math.random() * 200 - 100;
+    const moveY = Math.random() * 60 - 30;
+    noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+
+    // grow YES button
+    const scale = 1 + (noCount + 1) * 0.12;
+    yesBtn.style.transform = `scale(${scale})`;
+
+    noCount++;
+  };
+</script>
+
+</body>
+</html>
